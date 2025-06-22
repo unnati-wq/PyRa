@@ -23,6 +23,9 @@ const Hero = () => {
           <p className="text-xl md:text-2xl text-purple-300 font-light tracking-wider">
             Era of Programmable Payments
           </p>
+          <p className="text-lg text-gray-400 font-light mt-2">
+            Powered by PYUSD
+          </p>
         </div>
 
         {/* Main Headline */}
