@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import AuthModal from './AuthModal';
 import CreatePaymentModal from './CreatePaymentModal';
 import Dashboard from './Dashboard';
+import PaymentProcessModal from './PaymentProcessModal';
 
 interface Payment {
   id: string;
@@ -17,6 +18,7 @@ interface Payment {
 const Hero = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showPaymentProcessModal, setShowPaymentProcessModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
   const [userBalance, setUserBalance] = useState(0);
@@ -29,6 +31,10 @@ const Hero = () => {
     } else {
       setShowAuthModal(true);
     }
+  };
+
+  const handlePayInPYUSDClick = () => {
+    setShowPaymentProcessModal(true);
   };
 
   const handleAuthSuccess = (isSignUp: boolean) => {
@@ -62,6 +68,10 @@ const Hero = () => {
 
   const handleClosePaymentModal = () => {
     setShowPaymentModal(false);
+  };
+
+  const handleClosePaymentProcessModal = () => {
+    setShowPaymentProcessModal(false);
   };
 
   const handlePaymentCreated = (paymentData: { title: string; amount: string; currency: string; pyusdAmount: string }) => {
@@ -150,9 +160,33 @@ const Hero = () => {
           </div>
 
           {/* Bottom Text */}
-          <p className="text-lg text-gray-500 font-light">
+          <p className="text-lg text-gray-500 font-light mb-8">
             Convert to your local currency
           </p>
+
+          {/* Additional Action Buttons */}
+          <div className="space-y-4">
+            <div>
+              <Button 
+                size="lg" 
+                className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 text-lg font-normal rounded-lg transition-all duration-300"
+                onClick={handlePayInPYUSDClick}
+              >
+                Pay in PYUSD
+              </Button>
+            </div>
+            
+            <div>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-blue-500 text-blue-500 hover:bg-blue-50 px-8 py-4 text-lg font-normal rounded-lg transition-all duration-300"
+                onClick={() => setShowAuthModal(true)}
+              >
+                Login / Sign Up
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -160,6 +194,11 @@ const Hero = () => {
         isOpen={showAuthModal}
         onClose={handleCloseAuthModal}
         onAuthSuccess={handleAuthSuccess}
+      />
+
+      <PaymentProcessModal 
+        isOpen={showPaymentProcessModal}
+        onClose={handleClosePaymentProcessModal}
       />
     </>
   );
