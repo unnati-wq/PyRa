@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAuthSuccess: () => void;
+  onAuthSuccess: (isSignUp: boolean) => void;
 }
 
 const AuthModal = ({ isOpen, onClose, onAuthSuccess }: AuthModalProps) => {
@@ -22,7 +22,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }: AuthModalProps) => {
     // For now, we'll simulate authentication success
     // In a real app, this would make API calls
     console.log('Auth attempt:', { email, password, isSignUp });
-    onAuthSuccess();
+    onAuthSuccess(isSignUp);
   };
 
   const resetForm = () => {

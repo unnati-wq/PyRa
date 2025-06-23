@@ -10,9 +10,10 @@ import PaymentLinkModal from './PaymentLinkModal';
 interface CreatePaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onPaymentCreated: (paymentData: { title: string; amount: string; currency: string; pyusdAmount: string }) => void;
 }
 
-const CreatePaymentModal = ({ isOpen, onClose }: CreatePaymentModalProps) => {
+const CreatePaymentModal = ({ isOpen, onClose, onPaymentCreated }: CreatePaymentModalProps) => {
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('USD');
@@ -46,7 +47,15 @@ const CreatePaymentModal = ({ isOpen, onClose }: CreatePaymentModalProps) => {
 
   const handleCloseLinkModal = () => {
     setShowLinkModal(false);
-    onClose();
+    
+    // Add the payment to the dashboard
+    onPaymentCreated({
+      title,
+      amount,
+      currency,
+      pyusdAmount: calculatePYUSD()
+    });
+    
     // Reset form
     setTitle('');
     setAmount('');

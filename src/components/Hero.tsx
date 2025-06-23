@@ -1,14 +1,27 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import AuthModal from './AuthModal';
 import CreatePaymentModal from './CreatePaymentModal';
 import Dashboard from './Dashboard';
 
+interface Payment {
+  id: string;
+  title: string;
+  amount: string;
+  currency: string;
+  pyusd: string;
+  status: string;
+  date: string;
+}
+
 const Hero = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
+  const [userBalance, setUserBalance] = useState(0);
+  const [pendingPayments, setPendingPayments] = useState<Payment[]>([]);
+  const [completedPayments, setCompletedPayments] = useState<Payment[]>([]);
 
   const handleCreatePaymentClick = () => {
     if (isLoggedIn) {
@@ -18,9 +31,29 @@ const Hero = () => {
     }
   };
 
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = (isSignUp: boolean) => {
     setShowAuthModal(false);
     setIsLoggedIn(true);
+    setIsNewUser(isSignUp);
+    
+    // Set different data based on whether it's a new user or existing user
+    if (isSignUp) {
+      // New user - empty state
+      setUserBalance(0);
+      setPendingPayments([]);
+      setCompletedPayments([]);
+    } else {
+      // Existing user - populate with demo data
+      setUserBalance(156.73);
+      setPendingPayments([
+        { id: '1', title: "Website Design", amount: "500.00", currency: "USD", pyusd: "500.00", status: "Pending", date: "2024-01-15" },
+        { id: '2', title: "Logo Design", amount: "150.00", currency: "USD", pyusd: "150.00", status: "Pending", date: "2024-01-14" },
+      ]);
+      setCompletedPayments([
+        { id: '3', title: "App Development", amount: "1200.00", currency: "USD", pyusd: "1200.00", status: "Paid", date: "2024-01-10" },
+        { id: '4', title: "Consultation", amount: "75.00", currency: "EUR", pyusd: "81.52", status: "Paid", date: "2024-01-08" },
+      ]);
+    }
   };
 
   const handleCloseAuthModal = () => {
@@ -31,9 +64,32 @@ const Hero = () => {
     setShowPaymentModal(false);
   };
 
+  const handlePaymentCreated = (paymentData: { title: string; amount: string; currency: string; pyusdAmount: string }) => {
+    const newPayment: Payment = {
+      id: Date.now().toString(),
+      title: paymentData.title,
+      amount: paymentData.amount,
+      currency: paymentData.currency,
+      pyusd: paymentData.pyusdAmount,
+      status: "Pending",
+      date: new Date().toISOString().split('T')[0]
+    };
+    
+    setPendingPayments(prev => [newPayment, ...prev]);
+    setShowPaymentModal(false);
+  };
+
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setIsNewUser(false);
+    setUserBalance(0);
+    setPendingPayments([]);
+    setCompletedPayments([]);
     setShowPaymentModal(false);
+  };
+
+  const handleBalanceUpdate = (newBalance: number) => {
+    setUserBalance(newBalance);
   };
 
   // Show dashboard if user is logged in
@@ -43,11 +99,16 @@ const Hero = () => {
         <Dashboard 
           onCreatePayment={handleCreatePaymentClick}
           onLogout={handleLogout}
+          userBalance={userBalance}
+          pendingPayments={pendingPayments}
+          completedPayments={completedPayments}
+          onBalanceUpdate={handleBalanceUpdate}
         />
         {showPaymentModal && (
           <CreatePaymentModal 
             isOpen={showPaymentModal}
             onClose={handleClosePaymentModal}
+            onPaymentCreated={handlePaymentCreated}
           />
         )}
       </>

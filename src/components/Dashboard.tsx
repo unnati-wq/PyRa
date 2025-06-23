@@ -4,18 +4,34 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import PayPalConversionModal from './PayPalConversionModal';
 
+interface Payment {
+  id: string;
+  title: string;
+  amount: string;
+  currency: string;
+  pyusd: string;
+  status: string;
+  date: string;
+}
+
 interface DashboardProps {
   onCreatePayment: () => void;
   onLogout: () => void;
+  userBalance: number;
+  pendingPayments: Payment[];
+  completedPayments: Payment[];
+  onBalanceUpdate: (newBalance: number) => void;
 }
 
-const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
+const Dashboard = ({ 
+  onCreatePayment, 
+  onLogout, 
+  userBalance, 
+  pendingPayments, 
+  completedPayments, 
+  onBalanceUpdate 
+}: DashboardProps) => {
   const [showPayPalModal, setShowPayPalModal] = useState(false);
-  const [userBalance, setUserBalance] = useState(0.00); // Start with 0 balance for new users
-  
-  // Empty arrays for new users - no pre-populated data
-  const [pendingPayments] = useState([]);
-  const [completedPayments] = useState([]);
 
   const handlePayPalConversion = () => {
     setShowPayPalModal(true);
@@ -26,7 +42,8 @@ const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
   };
 
   const handleConversionSuccess = (pyusdAmount: number) => {
-    setUserBalance(prev => prev - pyusdAmount);
+    const newBalance = userBalance - pyusdAmount;
+    onBalanceUpdate(newBalance);
     setShowPayPalModal(false);
   };
 
@@ -91,7 +108,7 @@ const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {pendingPayments.map((payment: any) => (
+                    {pendingPayments.map((payment) => (
                       <TableRow key={payment.id}>
                         <TableCell className="font-medium text-black">{payment.title}</TableCell>
                         <TableCell className="text-gray-700">{payment.amount} {payment.currency}</TableCell>
@@ -131,7 +148,7 @@ const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {completedPayments.map((payment: any) => (
+                    {completedPayments.map((payment) => (
                       <TableRow key={payment.id}>
                         <TableCell className="font-medium text-black">{payment.title}</TableCell>
                         <TableCell className="text-gray-700">{payment.amount} {payment.currency}</TableCell>
