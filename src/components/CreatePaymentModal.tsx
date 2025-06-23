@@ -26,8 +26,8 @@ const CreatePaymentModal = ({ isOpen, onClose }: CreatePaymentModalProps) => {
     INR: 83.12
   };
 
-  const calculatePYUSD = () => {
-    if (!amount) return 0;
+  const calculatePYUSD = (): string => {
+    if (!amount) return '0';
     const baseAmount = parseFloat(amount);
     const rate = conversionRates[currency as keyof typeof conversionRates];
     return (baseAmount / rate).toFixed(2);
