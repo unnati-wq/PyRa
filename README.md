@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# PyRa|Era Of Programmable Payments
 
 ## Project info
 
