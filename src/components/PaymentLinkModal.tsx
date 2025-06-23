@@ -2,12 +2,13 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Copy, Share } from 'lucide-react';
+import { Copy, Share, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface PaymentLinkModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onBack?: () => void;
   paymentLink: string;
   title: string;
   amount: string;
@@ -18,6 +19,7 @@ interface PaymentLinkModalProps {
 const PaymentLinkModal = ({ 
   isOpen, 
   onClose, 
+  onBack,
   paymentLink, 
   title, 
   amount, 
@@ -33,6 +35,8 @@ const PaymentLinkModal = ({
         title: "Link copied!",
         description: "Payment link has been copied to clipboard",
       });
+      // Close modal after successful copy
+      onClose();
     } catch (err) {
       toast({
         title: "Copy failed",
@@ -50,6 +54,7 @@ const PaymentLinkModal = ({
           text: `Please pay ${amount} ${currency} for ${title}`,
           url: paymentLink,
         });
+        onClose();
       } catch (err) {
         console.log('Share cancelled');
       }
@@ -64,7 +69,15 @@ const PaymentLinkModal = ({
       <DialogContent className="sm:max-w-md bg-gray-50">
         <DialogHeader className="pb-6">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-medium text-black">
+            {onBack && (
+              <button 
+                onClick={onBack}
+                className="text-gray-400 hover:text-gray-600 mr-2"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            )}
+            <DialogTitle className="text-2xl font-medium text-black flex-1">
               Payment Link Generated
             </DialogTitle>
             <button 

@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import PayPalConversionModal from './PayPalConversionModal';
+import PaymentLinkModal from './PaymentLinkModal';
+import PayInPYUSDModal from './PayInPYUSDModal';
 
 interface Payment {
   id: string;
@@ -12,6 +14,7 @@ interface Payment {
   pyusd: string;
   status: string;
   date: string;
+  paymentLink?: string;
 }
 
 interface DashboardProps {
@@ -32,6 +35,9 @@ const Dashboard = ({
   onBalanceUpdate 
 }: DashboardProps) => {
   const [showPayPalModal, setShowPayPalModal] = useState(false);
+  const [showPaymentLinkModal, setShowPaymentLinkModal] = useState(false);
+  const [showPayInPYUSDModal, setShowPayInPYUSDModal] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
 
   const handlePayPalConversion = () => {
     setShowPayPalModal(true);
@@ -47,6 +53,30 @@ const Dashboard = ({
     setShowPayPalModal(false);
   };
 
+  const handlePaymentClick = (payment: Payment) => {
+    // Generate payment link if not exists
+    const linkId = Math.random().toString(36).substring(7);
+    const paymentWithLink = {
+      ...payment,
+      paymentLink: payment.paymentLink || `https://pyra.app/pay/${linkId}`
+    };
+    setSelectedPayment(paymentWithLink);
+    setShowPaymentLinkModal(true);
+  };
+
+  const handleClosePaymentLinkModal = () => {
+    setShowPaymentLinkModal(false);
+    setSelectedPayment(null);
+  };
+
+  const handlePayInPYUSD = () => {
+    setShowPayInPYUSDModal(true);
+  };
+
+  const handleClosePayInPYUSDModal = () => {
+    setShowPayInPYUSDModal(false);
+  };
+
   return (
     <>
       <div className="min-h-screen bg-white p-6">
@@ -58,6 +88,12 @@ const Dashboard = ({
               <p className="text-gray-600 font-light">Manage your payments and track your balance</p>
             </div>
             <div className="flex gap-4">
+              <Button 
+                onClick={handlePayInPYUSD}
+                className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-normal"
+              >
+                Pay in PYUSD
+              </Button>
               <Button 
                 onClick={onCreatePayment}
                 className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-normal"
@@ -85,7 +121,7 @@ const Dashboard = ({
               <Button 
                 onClick={handlePayPalConversion}
                 disabled={userBalance <= 0}
-                className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-normal disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-normal disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 Convert to USD via PayPal
               </Button>
@@ -109,7 +145,11 @@ const Dashboard = ({
                   </TableHeader>
                   <TableBody>
                     {pendingPayments.map((payment) => (
-                      <TableRow key={payment.id}>
+                      <TableRow 
+                        key={payment.id} 
+                        className="cursor-pointer hover:bg-gray-50"
+                        onClick={() => handlePaymentClick(payment)}
+                      >
                         <TableCell className="font-medium text-black">{payment.title}</TableCell>
                         <TableCell className="text-gray-700">{payment.amount} {payment.currency}</TableCell>
                         <TableCell className="text-gray-700">{payment.pyusd} PYUSD</TableCell>
@@ -179,6 +219,25 @@ const Dashboard = ({
         onClose={handleClosePayPalModal}
         onConversionSuccess={handleConversionSuccess}
         currentBalance={userBalance}
+      />
+
+      {selectedPayment && (
+        <PaymentLinkModal 
+          isOpen={showPaymentLinkModal}
+          onClose={handleClosePaymentLinkModal}
+          paymentLink={selectedPayment.paymentLink || ''}
+          title={selectedPayment.title}
+          amount={selectedPayment.amount}
+          currency={selectedPayment.currency}
+          pyusdAmount={selectedPayment.pyusd}
+        />
+      )}
+
+      <PayInPYUSDModal 
+        isOpen={showPayInPYUSDModal}
+        onClose={handleClosePayInPYUSDModal}
+        currentBalance={userBalance}
+        onBalanceUpdate={onBalanceUpdate}
       />
     </>
   );
