@@ -21,7 +21,6 @@ const Hero = () => {
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
     setIsLoggedIn(true);
-    setShowPaymentModal(true);
   };
 
   const handleCloseAuthModal = () => {
@@ -34,6 +33,7 @@ const Hero = () => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setShowPaymentModal(false);
   };
 
   // Show dashboard if user is logged in
@@ -44,10 +44,12 @@ const Hero = () => {
           onCreatePayment={handleCreatePaymentClick}
           onLogout={handleLogout}
         />
-        <CreatePaymentModal 
-          isOpen={showPaymentModal}
-          onClose={handleClosePaymentModal}
-        />
+        {showPaymentModal && (
+          <CreatePaymentModal 
+            isOpen={showPaymentModal}
+            onClose={handleClosePaymentModal}
+          />
+        )}
       </>
     );
   }
@@ -97,11 +99,6 @@ const Hero = () => {
         isOpen={showAuthModal}
         onClose={handleCloseAuthModal}
         onAuthSuccess={handleAuthSuccess}
-      />
-
-      <CreatePaymentModal 
-        isOpen={showPaymentModal}
-        onClose={handleClosePaymentModal}
       />
     </>
   );
