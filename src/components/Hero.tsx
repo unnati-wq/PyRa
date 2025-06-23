@@ -29,7 +29,7 @@ const Hero = () => {
         <div className="mb-12">
           <Button 
             size="lg" 
-            className="bg-black hover:bg-gray-800 text-white px-8 py-4 text-lg font-normal rounded-lg transition-all duration-300"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 text-lg font-normal rounded-lg transition-all duration-300"
           >
             Create Payment Link
           </Button>
