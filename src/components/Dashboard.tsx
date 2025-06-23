@@ -11,18 +11,11 @@ interface DashboardProps {
 
 const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
   const [showPayPalModal, setShowPayPalModal] = useState(false);
-  const [userBalance, setUserBalance] = useState(156.73); // Starting balance for demo
+  const [userBalance, setUserBalance] = useState(0.00); // Start with 0 balance for new users
   
-  // Mock data - empty for new users, populated for existing users
-  const [pendingPayments] = useState([
-    { id: 1, title: "Website Design", amount: "500.00", currency: "USD", pyusd: "500.00", status: "Pending", date: "2024-01-15" },
-    { id: 2, title: "Logo Design", amount: "150.00", currency: "USD", pyusd: "150.00", status: "Pending", date: "2024-01-14" },
-  ]);
-
-  const [completedPayments] = useState([
-    { id: 3, title: "App Development", amount: "1200.00", currency: "USD", pyusd: "1200.00", status: "Paid", date: "2024-01-10" },
-    { id: 4, title: "Consultation", amount: "75.00", currency: "EUR", pyusd: "81.52", status: "Paid", date: "2024-01-08" },
-  ]);
+  // Empty arrays for new users - no pre-populated data
+  const [pendingPayments] = useState([]);
+  const [completedPayments] = useState([]);
 
   const handlePayPalConversion = () => {
     setShowPayPalModal(true);
@@ -74,7 +67,8 @@ const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
               </div>
               <Button 
                 onClick={handlePayPalConversion}
-                className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-normal"
+                disabled={userBalance <= 0}
+                className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-normal disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 Convert to USD via PayPal
               </Button>
@@ -97,7 +91,7 @@ const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {pendingPayments.map((payment) => (
+                    {pendingPayments.map((payment: any) => (
                       <TableRow key={payment.id}>
                         <TableCell className="font-medium text-black">{payment.title}</TableCell>
                         <TableCell className="text-gray-700">{payment.amount} {payment.currency}</TableCell>
@@ -115,6 +109,7 @@ const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
               ) : (
                 <div className="p-8 text-center">
                   <p className="text-gray-500 font-light">No pending payments yet</p>
+                  <p className="text-sm text-gray-400 mt-2">Create a payment link to start receiving payments</p>
                 </div>
               )}
             </div>
@@ -136,7 +131,7 @@ const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {completedPayments.map((payment) => (
+                    {completedPayments.map((payment: any) => (
                       <TableRow key={payment.id}>
                         <TableCell className="font-medium text-black">{payment.title}</TableCell>
                         <TableCell className="text-gray-700">{payment.amount} {payment.currency}</TableCell>
@@ -154,6 +149,7 @@ const Dashboard = ({ onCreatePayment, onLogout }: DashboardProps) => {
               ) : (
                 <div className="p-8 text-center">
                   <p className="text-gray-500 font-light">No completed payments yet</p>
+                  <p className="text-sm text-gray-400 mt-2">Your successful transactions will appear here</p>
                 </div>
               )}
             </div>
