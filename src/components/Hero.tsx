@@ -3,17 +3,24 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import AuthModal from './AuthModal';
 import CreatePaymentModal from './CreatePaymentModal';
+import Dashboard from './Dashboard';
 
 const Hero = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleCreatePaymentClick = () => {
-    setShowAuthModal(true);
+    if (isLoggedIn) {
+      setShowPaymentModal(true);
+    } else {
+      setShowAuthModal(true);
+    }
   };
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
+    setIsLoggedIn(true);
     setShowPaymentModal(true);
   };
 
@@ -24,6 +31,26 @@ const Hero = () => {
   const handleClosePaymentModal = () => {
     setShowPaymentModal(false);
   };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
+  // Show dashboard if user is logged in
+  if (isLoggedIn) {
+    return (
+      <>
+        <Dashboard 
+          onCreatePayment={handleCreatePaymentClick}
+          onLogout={handleLogout}
+        />
+        <CreatePaymentModal 
+          isOpen={showPaymentModal}
+          onClose={handleClosePaymentModal}
+        />
+      </>
+    );
+  }
 
   return (
     <>
