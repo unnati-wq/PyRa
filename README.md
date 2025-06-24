@@ -1,4 +1,4 @@
-#🧾 PyRa — Era of Programmable Payments
+# PyRa — Era of Programmable Payments
 Project URL: [lovable.dev/projects/pyra](https://preview--pyra-programmable-payments-hub.lovable.app/)
 
 PyRa simplifies global payments using programmable flows and PYUSD stablecoin settlement.
