@@ -1,4 +1,4 @@
-🧾 PyRa — Era of Programmable Payments
+#🧾 PyRa — Era of Programmable Payments
 Project URL: [lovable.dev/projects/pyra](https://preview--pyra-programmable-payments-hub.lovable.app/)
 
 PyRa simplifies global payments using programmable flows and PYUSD stablecoin settlement.
@@ -10,7 +10,7 @@ You can work with this project in multiple ways depending on your preferred work
 Clone and run PyRa on your machine:
 
 # Step 1: Clone this repository
-git clone [https://github.com/YOUR_USERNAME/PyRa.git](https://github.com/unnati-wq/pyra-programmable-payments-hub.git)
+git clone https://github.com/unnati-wq/pyra-programmable-payments-hub.git
 
 # Step 2: Navigate into the project directory
 cd PyRa
